@@ -1,4 +1,4 @@
-const API_URL = "https://portfolio-ddzw.onrender.com/api";
+const API_URL = "/api";
 
 
 // ==========================================
@@ -7,7 +7,8 @@ const API_URL = "https://portfolio-ddzw.onrender.com/api";
 
 async function loadProjects() {
 
-    const container = document.getElementById("projects-container");
+    const container =
+        document.getElementById("projects-container");
 
     if (!container) return;
 
@@ -19,23 +20,30 @@ async function loadProjects() {
             </div>
         `;
 
-        const response = await fetch(`${API_URL}/projects`, {
-            method: "GET",
-            headers: {
-                "Accept": "application/json"
-            },
-            cache: "no-cache"
-        });
+        const response =
+            await fetch(`${API_URL}/projects`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                },
+                cache: "no-cache"
+            });
 
         if (!response.ok) {
-            throw new Error(`Server returned ${response.status}`);
+            throw new Error(
+                `Server returned ${response.status}`
+            );
         }
 
-        const projects = await response.json();
+        const projects =
+            await response.json();
 
         container.innerHTML = "";
 
-        if (!Array.isArray(projects) || projects.length === 0) {
+        if (
+            !Array.isArray(projects) ||
+            projects.length === 0
+        ) {
 
             container.innerHTML = `
                 <div class="no-projects">
@@ -46,22 +54,37 @@ async function loadProjects() {
             return;
         }
 
+
         projects.forEach((project, index) => {
 
-            const card = document.createElement("article");
+            const card =
+                document.createElement("article");
 
-            card.className = "project-card";
+            card.className =
+                "project-card";
 
-            const number = String(index + 1).padStart(2, "0");
+
+            const number =
+                String(index + 1).padStart(2, "0");
+
 
             const technologies =
                 Array.isArray(project.technologies)
                     ? project.technologies
                     : [];
 
-            const tags = technologies
-                .map(tech => `<span>${escapeHTML(tech)}</span>`)
-                .join("");
+
+            const tags =
+                technologies
+                    .map(
+                        tech => `
+                            <span>
+                                ${escapeHTML(tech)}
+                            </span>
+                        `
+                    )
+                    .join("");
+
 
             card.innerHTML = `
 
@@ -69,7 +92,9 @@ async function loadProjects() {
 
                     <div class="project-visual">
 
-                        <span>${number}</span>
+                        <span>
+                            ${number}
+                        </span>
 
                         <div class="visual-circle"></div>
 
@@ -78,6 +103,7 @@ async function loadProjects() {
                     </div>
 
                 </div>
+
 
                 <div class="project-content">
 
@@ -93,13 +119,19 @@ async function loadProjects() {
 
                     </div>
 
+
                     <div class="project-tags">
                         ${tags}
                     </div>
 
+
                     <h3>
-                        ${escapeHTML(project.title || "Untitled Project")}
+                        ${escapeHTML(
+                            project.title ||
+                            "Untitled Project"
+                        )}
                     </h3>
+
 
                     <p>
                         ${escapeHTML(
@@ -107,6 +139,7 @@ async function loadProjects() {
                             "No description available."
                         )}
                     </p>
+
 
                     <button
                         type="button"
@@ -117,25 +150,38 @@ async function loadProjects() {
                     </button>
 
                 </div>
+
             `;
 
-            card.addEventListener("click", function (event) {
 
-                if (event.target.closest("a")) {
-                    return;
+            card.addEventListener(
+                "click",
+                function (event) {
+
+                    if (
+                        event.target.closest("a")
+                    ) {
+                        return;
+                    }
+
+                    openProjectModal(project);
+
                 }
+            );
 
-                openProjectModal(project);
-
-            });
 
             container.appendChild(card);
 
         });
 
+
     } catch (error) {
 
-        console.error("Project loading error:", error);
+        console.error(
+            "Project loading error:",
+            error
+        );
+
 
         container.innerHTML = `
 
@@ -152,7 +198,9 @@ async function loadProjects() {
             </div>
 
         `;
+
     }
+
 }
 
 
@@ -162,22 +210,37 @@ async function loadProjects() {
 
 function openProjectModal(project) {
 
-    const oldModal = document.getElementById("projectModal");
+    const oldModal =
+        document.getElementById(
+            "projectModal"
+        );
+
 
     if (oldModal) {
         oldModal.remove();
     }
+
 
     const technologies =
         Array.isArray(project.technologies)
             ? project.technologies
             : [];
 
-    const tags = technologies
-        .map(tech => `<span>${escapeHTML(tech)}</span>`)
-        .join("");
+
+    const tags =
+        technologies
+            .map(
+                tech => `
+                    <span>
+                        ${escapeHTML(tech)}
+                    </span>
+                `
+            )
+            .join("");
+
 
     let links = "";
+
 
     if (
         project.github &&
@@ -197,7 +260,9 @@ function openProjectModal(project) {
             </a>
 
         `;
+
     }
+
 
     if (
         project.live &&
@@ -217,30 +282,44 @@ function openProjectModal(project) {
             </a>
 
         `;
+
     }
+
 
     if (!links) {
 
         links = `
 
             <span class="modal-no-links">
+
                 Project links will be added soon.
+
             </span>
 
         `;
+
     }
 
-    const modal = document.createElement("div");
 
-    modal.id = "projectModal";
+    const modal =
+        document.createElement("div");
 
-    modal.className = "project-modal";
+
+    modal.id =
+        "projectModal";
+
+
+    modal.className =
+        "project-modal";
+
 
     modal.innerHTML = `
 
         <div class="modal-overlay"></div>
 
+
         <div class="modal-box">
+
 
             <button
                 type="button"
@@ -251,28 +330,42 @@ function openProjectModal(project) {
 
             </button>
 
+
             <div class="modal-number">
 
-                ${String(project.title || "P")
+                ${String(
+                    project.title || "P"
+                )
                     .substring(0, 1)
                     .toUpperCase()}
 
             </div>
 
+
             <p class="modal-label">
                 PROJECT
             </p>
 
+
             <h2>
-                ${escapeHTML(project.title || "Untitled Project")}
+
+                ${escapeHTML(
+                    project.title ||
+                    "Untitled Project"
+                )}
+
             </h2>
 
+
             <p class="modal-description">
+
                 ${escapeHTML(
                     project.description ||
                     "No description available."
                 )}
+
             </p>
+
 
             <div class="modal-section">
 
@@ -280,28 +373,44 @@ function openProjectModal(project) {
                     TECHNOLOGIES
                 </p>
 
+
                 <div class="modal-tags">
+
                     ${tags}
+
                 </div>
 
             </div>
 
+
             <div class="modal-actions">
+
                 ${links}
+
             </div>
 
+
         </div>
+
     `;
+
 
     document.body.appendChild(modal);
 
+
     requestAnimationFrame(() => {
+
         modal.classList.add("show");
+
     });
+
 
     const closeModal = () => {
 
-        modal.classList.remove("show");
+        modal.classList.remove(
+            "show"
+        );
+
 
         setTimeout(() => {
 
@@ -310,34 +419,48 @@ function openProjectModal(project) {
             }
 
         }, 250);
+
     };
+
 
     modal
         .querySelector(".modal-close")
-        .addEventListener("click", closeModal);
+        .addEventListener(
+            "click",
+            closeModal
+        );
+
 
     modal
         .querySelector(".modal-overlay")
-        .addEventListener("click", closeModal);
+        .addEventListener(
+            "click",
+            closeModal
+        );
 
-    const escapeHandler = (event) => {
 
-        if (event.key === "Escape") {
+    const escapeHandler =
+        (event) => {
 
-            closeModal();
+            if (event.key === "Escape") {
 
-            document.removeEventListener(
-                "keydown",
-                escapeHandler
-            );
+                closeModal();
 
-        }
-    };
+                document.removeEventListener(
+                    "keydown",
+                    escapeHandler
+                );
+
+            }
+
+        };
+
 
     document.addEventListener(
         "keydown",
         escapeHandler
     );
+
 }
 
 
@@ -347,16 +470,17 @@ function openProjectModal(project) {
 
 function setupContactForm() {
 
-    /*
-        This searches for the contact form using
-        several common IDs/classes so it works with
-        your existing HTML.
-    */
-
     const form =
-        document.querySelector("#contact-form") ||
-        document.querySelector(".contact-form") ||
-        document.querySelector("form[data-contact]");
+        document.querySelector(
+            "#contact-form"
+        ) ||
+        document.querySelector(
+            ".contact-form"
+        ) ||
+        document.querySelector(
+            "form[data-contact]"
+        );
+
 
     if (!form) {
 
@@ -365,160 +489,186 @@ function setupContactForm() {
         );
 
         return;
+
     }
 
-    form.addEventListener("submit", async function (event) {
 
-        event.preventDefault();
+    form.addEventListener(
+        "submit",
+        async function (event) {
 
-        const nameInput =
-            form.querySelector(
-                'input[name="name"]'
-            );
-
-        const emailInput =
-            form.querySelector(
-                'input[name="email"]'
-            );
-
-        const messageInput =
-            form.querySelector(
-                'textarea[name="message"]'
-            );
-
-        if (
-            !nameInput ||
-            !emailInput ||
-            !messageInput
-        ) {
-
-            console.error(
-                "Contact form fields are missing."
-            );
-
-            return;
-        }
-
-        const name =
-            nameInput.value.trim();
-
-        const email =
-            emailInput.value.trim();
-
-        const message =
-            messageInput.value.trim();
+            event.preventDefault();
 
 
-        if (!name || !email || !message) {
-
-            showContactMessage(
-                form,
-                "Please fill in all fields.",
-                false
-            );
-
-            return;
-        }
-
-
-        const submitButton =
-            form.querySelector(
-                'button[type="submit"], input[type="submit"]'
-            );
-
-
-        const originalText =
-            submitButton
-                ? submitButton.textContent
-                : "";
-
-
-        if (submitButton) {
-
-            submitButton.disabled = true;
-
-            submitButton.textContent =
-                "Sending...";
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_URL}/contact`,
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json",
-
-                            "Accept":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            name,
-                            email,
-                            message
-                        })
-                    }
+            const nameInput =
+                form.querySelector(
+                    'input[name="name"]'
                 );
 
 
-            const data =
-                await response.json()
-                    .catch(() => ({}));
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    data.message ||
-                    `Server error: ${response.status}`
+            const emailInput =
+                form.querySelector(
+                    'input[name="email"]'
                 );
+
+
+            const messageInput =
+                form.querySelector(
+                    'textarea[name="message"]'
+                );
+
+
+            if (
+                !nameInput ||
+                !emailInput ||
+                !messageInput
+            ) {
+
+                console.error(
+                    "Contact form fields are missing."
+                );
+
+                return;
+
             }
 
 
-            showContactMessage(
-                form,
-                "Message sent successfully! I'll get back to you soon.",
-                true
-            );
+            const name =
+                nameInput.value.trim();
 
 
-            form.reset();
+            const email =
+                emailInput.value.trim();
 
 
-        } catch (error) {
-
-            console.error(
-                "Contact form error:",
-                error
-            );
+            const message =
+                messageInput.value.trim();
 
 
-            showContactMessage(
-                form,
-                "Unable to send your message right now. Please try again.",
-                false
-            );
+            if (
+                !name ||
+                !email ||
+                !message
+            ) {
+
+                showContactMessage(
+                    form,
+                    "Please fill in all fields.",
+                    false
+                );
+
+                return;
+
+            }
 
 
-        } finally {
+            const submitButton =
+                form.querySelector(
+                    'button[type="submit"], input[type="submit"]'
+                );
+
+
+            const originalText =
+                submitButton
+                    ? submitButton.textContent
+                    : "";
+
 
             if (submitButton) {
 
-                submitButton.disabled = false;
+                submitButton.disabled =
+                    true;
 
                 submitButton.textContent =
-                    originalText ||
-                    "Send Message";
-            }
-        }
+                    "Sending...";
 
-    });
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/contact`,
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+                                name,
+                                email,
+                                message
+                            })
+                        }
+                    );
+
+
+                const data =
+                    await response
+                        .json()
+                        .catch(() => ({}));
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        `Server error: ${response.status}`
+                    );
+
+                }
+
+
+                showContactMessage(
+                    form,
+                    "Message sent successfully! I'll get back to you soon.",
+                    true
+                );
+
+
+                form.reset();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Contact form error:",
+                    error
+                );
+
+
+                showContactMessage(
+                    form,
+                    "Unable to send your message right now. Please try again.",
+                    false
+                );
+
+
+            } finally {
+
+                if (submitButton) {
+
+                    submitButton.disabled =
+                        false;
+
+                    submitButton.textContent =
+                        originalText ||
+                        "Send Message";
+
+                }
+
+            }
+
+        }
+    );
+
 }
 
 
@@ -541,14 +691,19 @@ function showContactMessage(
     if (!messageBox) {
 
         messageBox =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
+
 
         messageBox.className =
             "contact-status";
 
+
         form.appendChild(
             messageBox
         );
+
     }
 
 
@@ -567,11 +722,12 @@ function showContactMessage(
             ? "success"
             : "error"
     );
+
 }
 
 
 // ==========================================
-// SECURITY / HTML ESCAPE
+// SECURITY
 // ==========================================
 
 function escapeHTML(value) {
@@ -582,6 +738,7 @@ function escapeHTML(value) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
+
 }
 
 

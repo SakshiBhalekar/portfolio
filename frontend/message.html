@@ -362,6 +362,8 @@
 
             min-height: 18px;
 
+            margin-top: 5px;
+
             font-size: 11px;
 
         }
@@ -492,24 +494,18 @@
 
         <div class="actions">
 
-
-            <button
-                type="submit">
-
+            <button type="submit">
                 Send Message →
-
             </button>
 
 
             <a
-                href="#"
-                class="cancel"
-                onclick="window.close(); return false;">
+                href="index.html"
+                class="cancel">
 
                 Cancel
 
             </a>
-
 
         </div>
 
@@ -525,55 +521,60 @@
 
 <script>
 
-const API_URL =
-    "https://portfolio-ddzw.onrender.com/api";
+const API_URL = "/api";
 
 
 const form =
-    document.getElementById(
-        "contactForm"
-    );
+    document.getElementById("contactForm");
 
 
 const formMessage =
-    document.getElementById(
-        "formMessage"
-    );
+    document.getElementById("formMessage");
 
 
 form.addEventListener(
     "submit",
     async function(event) {
 
-
         event.preventDefault();
 
 
         const name =
             document
-            .getElementById("name")
-            .value
-            .trim();
+                .getElementById("name")
+                .value
+                .trim();
 
 
         const email =
             document
-            .getElementById("email")
-            .value
-            .trim();
+                .getElementById("email")
+                .value
+                .trim();
 
 
         const message =
             document
-            .getElementById("message")
-            .value
-            .trim();
+                .getElementById("message")
+                .value
+                .trim();
 
 
         const button =
-            form.querySelector(
-                "button"
-            );
+            form.querySelector("button");
+
+
+        if (!name || !email || !message) {
+
+            formMessage.textContent =
+                "Please fill in all fields.";
+
+            formMessage.style.color =
+                "#ff7675";
+
+            return;
+
+        }
 
 
         button.disabled = true;
@@ -581,45 +582,42 @@ form.addEventListener(
         button.textContent =
             "Sending...";
 
-
-        formMessage.textContent =
-            "";
+        formMessage.textContent = "";
 
 
         try {
-
 
             const response =
                 await fetch(
                     `${API_URL}/contact`,
                     {
-
                         method: "POST",
 
                         headers: {
-
                             "Content-Type":
-                                "application/json"
+                                "application/json",
 
+                            "Accept":
+                                "application/json"
                         },
 
-                        body:
-                            JSON.stringify({
+                        body: JSON.stringify({
 
-                                name: name,
+                            name: name,
 
-                                email: email,
+                            email: email,
 
-                                message: message
+                            message: message
 
-                            })
+                        })
 
                     }
                 );
 
 
             const data =
-                await response.json();
+                await response.json()
+                    .catch(() => ({}));
 
 
             if (!response.ok) {
@@ -643,11 +641,12 @@ form.addEventListener(
             form.reset();
 
 
-        }
+        } catch (error) {
 
-        catch (error) {
-
-            console.error(error);
+            console.error(
+                "Contact error:",
+                error
+            );
 
 
             formMessage.textContent =
